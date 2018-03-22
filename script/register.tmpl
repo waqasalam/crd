@@ -1,6 +1,3 @@
-;; This buffer is for text that is not saved, and for Lisp evaluation.
-;; To create a file, visit it with C-x C-f and enter text in its buffer.
-
 package {{ .Version }}
 
 import (
@@ -12,7 +9,7 @@ import (
 )
 
 // SchemeGroupVersion is group version used to register these objects
-var SchemeGroupVersion = schema.GroupVersion{Group: grp.GroupName, Version: {{ .Version }}}
+var SchemeGroupVersion = schema.GroupVersion{Group: grp.GroupName, Version: "{{ .Version }}"}
 
 // Kind takes an unqualified kind and returns back a Group qualified GroupKind
 func Kind(kind string) schema.GroupKind {
