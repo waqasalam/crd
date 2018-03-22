@@ -29,10 +29,11 @@ type SnapGenContext struct {
 }
 
 const (
-	crdfile       = "/crdtmp.go"
-	controllertmp = "/controllertmp.go"
-	utilfile      = "/util.go"
-	snapgen       = "/script"
+	crdfile        = "/crdtmp.go"
+	controllerfile = "/controllertmp.go"
+	registerfile   = "/registertmp.go"
+	utilfile       = "/util.go"
+	snapgen        = "/script"
 )
 
 var fmap = template.FuncMap{
@@ -139,6 +140,12 @@ func GenerateController(input *SnapGenContext) {
 		fmt.Println("Open file failed", crdpath)
 	}
 
+	regpath := input.Dirprefix + "/" + input.PkgRoot + input.Component + "/" + input.Version + registerfile
+	regHndl, err := os.OpenFile(regpath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0766)
+	if err != nil {
+		fmt.Println("Open file failed", crdpath)
+	}
+
 	utilPath := input.Dirprefix + "/" + input.PkgRoot + input.Component + "/" + input.Version + utilfile
 	utilHndl, err := os.OpenFile(utilPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0766)
 	if err != nil {
@@ -150,7 +157,7 @@ func GenerateController(input *SnapGenContext) {
 		os.Mkdir(controllerDir, 0755)
 
 	}
-	controllerpath := controllerDir + controllertmp
+	controllerpath := controllerDir + controllerfile
 
 	controller, err := os.OpenFile(controllerpath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0766)
 	if err != nil {
@@ -170,6 +177,11 @@ func GenerateController(input *SnapGenContext) {
 	}
 
 	err = tmpl.ExecuteTemplate(crdHndl, "crd.tmpl", *input)
+	if err != nil {
+		fmt.Println("error in processing template", err)
+	}
+
+	err = tmpl.ExecuteTemplate(regHndl, "register.tmpl", *input)
 	if err != nil {
 		fmt.Println("error in processing template", err)
 	}
