@@ -1,4 +1,4 @@
-package snapgen
+package main
 
 import (
 	"fmt"

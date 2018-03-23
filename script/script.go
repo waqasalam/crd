@@ -3,7 +3,6 @@ package main
 //
 // ./script --pkg-path [pkg] --version [ver] --component [comp] --controller [opdir]]
 import (
-	"crd/snapgen"
 	"flag"
 	"fmt"
 	"go/ast"
@@ -16,7 +15,7 @@ import (
 	"strings"
 )
 
-const crdfile = "/crd.go"
+const crd = "/crd.go"
 
 func ExtractCommentTags(marker string, lines []string) map[string][]string {
 	out := map[string][]string{}
@@ -54,9 +53,9 @@ func main() {
 
 	endLineCommentGroup := make(map[int]*ast.CommentGroup)
 
-	ctxt := snapgen.SnapGenContext{
-		ConfigCrdMap: make(map[types.Type]snapgen.CrdDetail),
-		StateCrdMap:  make(map[types.Type]snapgen.CrdDetail),
+	ctxt := SnapGenContext{
+		ConfigCrdMap: make(map[types.Type]CrdDetail),
+		StateCrdMap:  make(map[types.Type]CrdDetail),
 	}
 	op := flag.String("output-package", "", "Package Path for generated files")
 	pp := flag.String("pkg-path", "", "Package path to generate the file")
@@ -90,7 +89,7 @@ func main() {
 	pkgindex := strings.LastIndex(ctxt.PkgPath, "pkg")
 	ctxt.PkgRoot = ctxt.PkgPath[pkgindex:]
 
-	crdpath := ctxt.Dirprefix + "/" + ctxt.PkgRoot + ctxt.Component + "/" + ctxt.Version + crdfile
+	crdpath := ctxt.Dirprefix + "/" + ctxt.PkgRoot + ctxt.Component + "/" + ctxt.Version + crd
 
 	src, err := ioutil.ReadFile(crdpath)
 
@@ -147,7 +146,7 @@ func main() {
 				values := ExtractCommentTags("+", l)
 				if val, ok := values["gencrd"]; ok {
 					if val[0] == "config" {
-						ctxt.ConfigCrdMap[tn.Type()] = snapgen.CrdDetail{
+						ctxt.ConfigCrdMap[tn.Type()] = CrdDetail{
 							Name:       tn.Name(),
 							NameLower:  strings.ToLower(tn.Name()),
 							NamePlural: strings.ToLower(tn.Name() + "s"),
@@ -162,7 +161,7 @@ func main() {
 					values := ExtractCommentTags("+", l)
 					if val, ok := values["gencrd"]; ok {
 						if val[0] == "state" {
-							ctxt.StateCrdMap[tn.Type()] = snapgen.CrdDetail{
+							ctxt.StateCrdMap[tn.Type()] = CrdDetail{
 								Name:       tn.Name(),
 								NameLower:  strings.ToLower(tn.Name()),
 								NamePlural: strings.ToLower(tn.Name() + "s"),
@@ -183,5 +182,5 @@ func main() {
 	for k, v := range ctxt.StateCrdMap {
 		fmt.Println(k, v)
 	}
-	snapgen.GenerateController(&ctxt)
+	GenerateController(&ctxt)
 }
