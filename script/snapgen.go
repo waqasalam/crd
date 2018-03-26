@@ -118,9 +118,12 @@ func compare(v1, v2 reflect.Value) bool {
 
 func CompareObjAndDiff(x, y interface{}) []bool {
 
-	v1 := reflect.ValueOf(x)
-	v2 := reflect.ValueOf(y)
+	v1 := reflect.ValueOf(x).Elem()
+	v2 := reflect.ValueOf(y).Elem()
 
+	if v1.Kind() != reflect.Struct {
+		return nil
+	}
 	attrset := make([]bool, v1.NumField())
 
 	for i, n := 0, v1.NumField(); i < n; i++ {
