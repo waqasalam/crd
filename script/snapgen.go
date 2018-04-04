@@ -29,9 +29,9 @@ type SnapGenContext struct {
 }
 
 const (
-	crdfile        = "/crdtmp.go"
-	controllerfile = "/controllertmp.go"
-	registerfile   = "/registertmp.go"
+	crdfile        = "/crd.go"
+	controllerfile = "/controller.go"
+	registerfile   = "/register.go"
 	utilfile       = "/util.go"
 	snapgen        = "/script"
 )

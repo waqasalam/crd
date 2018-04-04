@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-const crd = "/crd.go"
+const crd = "/types.go"
 
 func ExtractCommentTags(marker string, lines []string) map[string][]string {
 	out := map[string][]string{}
