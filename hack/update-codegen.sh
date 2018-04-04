@@ -23,8 +23,23 @@ set -o pipefail
 #   k8s.io/kubernetes. The output-base is needed for the generators to output into the vendor dir
 #   instead of the $GOPATH directly. For normal projects this can be dropped.
 
+set -- "$GOPATH"
+IFS=":"; declare -a Array=($*)
+
+for i in "${Array[@]}"
+do
+    if [[ $i =~ "snaproute" ]]; then
+        if [ "${i: -1}" == '/' ]; then
+            new=${i::-1}
+            GOPATH=$new
+            break
+        fi
+
+    fi
+done
+
 SCRIPT_ROOT=$(dirname ${BASH_SOURCE})/..
   ${SCRIPT_ROOT}/vendor/k8s.io/code-generator/generate-groups.sh all \
-  crd/pkg/client crd/pkg/apis \
+  bgp/crd/pkg/client bgp/crd/pkg/apis \
   "pmd:v1" \
   --go-header-file ${SCRIPT_ROOT}/hack/custom-boilerplate.go.txt
