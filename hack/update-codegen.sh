@@ -40,6 +40,6 @@ done
 
 SCRIPT_ROOT=$(dirname ${BASH_SOURCE})/..
   ${SCRIPT_ROOT}/vendor/k8s.io/code-generator/generate-groups.sh all \
-  bgp/crd/pkg/client bgp/crd/pkg/apis \
+  crd/pkg/client crd/pkg/apis \
   "pmd:v1" \
   --go-header-file ${SCRIPT_ROOT}/hack/custom-boilerplate.go.txt
